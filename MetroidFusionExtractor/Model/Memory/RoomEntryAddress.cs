@@ -7,5 +7,5 @@ public class RoomEntryAddress
 
 public class RoomEntrySize
 {
-    public const int MainDeck = 0x57;
+    public const int MainDeck = 0x3C;
 }

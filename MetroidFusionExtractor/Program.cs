@@ -3,3 +3,5 @@
 using MetroidFusionExtractor.Model;
 
 var rom = new ROM("rom/Metroid Fusion (Europe) (En,Fr,De,Es,It).gba");
+
+rom.Debug();

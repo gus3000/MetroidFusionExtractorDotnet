@@ -24,8 +24,6 @@ public class ROM
             read = fileStream.Read(buffer, 0, BUFFER_SIZE);
             for (int i = 0; i < read; i++)
                 data.Add(buffer[i]);
-            // Console.WriteLine($"{read} bytes read");
-            // Console.Write(".");
         } while (read > 0);
 
         Console.WriteLine($"data size : {data.Count}");
@@ -33,7 +31,11 @@ public class ROM
 
     public void Debug()
     {
-        // new BlockData()
-        var entry = new RoomEntry(data.GetRange(RoomEntryAddress.MainDeck, RoomEntrySize.MainDeck));
+        var memoryRange = data.GetRange(RoomEntryAddress.MainDeck, RoomEntrySize.MainDeck);
+        Console.WriteLine($"input data : {string.Join(",", memoryRange)}");
+        // var entry = new RoomEntry(data.GetRange(RoomEntryAddress.MainDeck, RoomEntrySize.MainDeck));
+        
+        var entry = MemoryUtils.FromMemoryArray<RoomEntry>(memoryRange);
+        Console.WriteLine($"entry : {entry.tileset}");
     }
 }
