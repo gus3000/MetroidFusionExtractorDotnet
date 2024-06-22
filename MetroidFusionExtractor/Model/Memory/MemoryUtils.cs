@@ -1,27 +1,76 @@
+using System.Buffers.Binary;
 using System.Runtime.InteropServices;
 
 namespace MetroidFusionExtractor.Model.Memory;
 
 public class MemoryUtils
 {
-    public static T? FromMemoryArray<T>(List<byte> input)
+    public enum Endianness
     {
-        // var outputSize = System.Runtime.InteropServices.Marshal.SizeOf(output);
-        var outputSize = Marshal.SizeOf(typeof(T));
-        Console.WriteLine($"input size : {input.Count}, output size : {outputSize}");
+        BigEndian,
+        LittleEndian
+    }
 
-        GCHandle handle = GCHandle.Alloc(input.ToArray(), GCHandleType.Pinned);
-        T? output;
+    internal static T BytesToStruct<T>(byte[] rawData, Endianness endianness) where T : class
+    {
+        T result; // = default(T);
+
+        MaybeAdjustEndianness(typeof(T), rawData, endianness);
+
+        GCHandle handle = GCHandle.Alloc(rawData, GCHandleType.Pinned);
+
         try
         {
-            output = (T)Marshal.PtrToStructure(handle.AddrOfPinnedObject(), typeof(T));
+            IntPtr rawDataPtr = handle.AddrOfPinnedObject();
+            result = (T)Marshal.PtrToStructure(rawDataPtr, typeof(T));
         }
         finally
         {
             handle.Free();
         }
 
+        return result;
+    }
 
-        return output;
+    private static void MaybeAdjustEndianness(Type type, byte[] data, Endianness endianness, int startOffset = 0)
+    {
+        if ((BitConverter.IsLittleEndian) == (endianness == Endianness.LittleEndian))
+        {
+            // nothing to change => return
+            return;
+        }
+
+        foreach (var field in type.GetFields())
+        {
+            var fieldType = field.FieldType;
+            if (field.IsStatic)
+                // don't process static fields
+                continue;
+
+            if (fieldType == typeof(string))
+                // don't swap bytes for strings
+                continue;
+
+            var offset = Marshal.OffsetOf(type, field.Name).ToInt32();
+
+            // handle enums
+            if (fieldType.IsEnum)
+                fieldType = Enum.GetUnderlyingType(fieldType);
+
+            // check for sub-fields to recurse if necessary
+            var subFields = fieldType.GetFields().Where(subField => subField.IsStatic == false).ToArray();
+
+            var effectiveOffset = startOffset + offset;
+
+            if (subFields.Length == 0)
+            {
+                Array.Reverse(data, effectiveOffset, Marshal.SizeOf(fieldType));
+            }
+            else
+            {
+                // recurse
+                MaybeAdjustEndianness(fieldType, data, endianness, effectiveOffset);
+            }
+        }
     }
 }

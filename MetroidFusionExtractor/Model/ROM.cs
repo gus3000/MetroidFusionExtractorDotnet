@@ -1,4 +1,5 @@
-﻿using MetroidFusionExtractor.Model.Memory;
+﻿using System.Text;
+using MetroidFusionExtractor.Model.Memory;
 
 namespace MetroidFusionExtractor.Model;
 
@@ -31,11 +32,33 @@ public class ROM
 
     public void Debug()
     {
-        var memoryRange = data.GetRange(RoomEntryAddress.MainDeck, RoomEntrySize.MainDeck);
-        Console.WriteLine($"input data : {string.Join(",", memoryRange)}");
+        // Console.WriteLine($"input data : {string.Join(",", memoryRange)}");
         // var entry = new RoomEntry(data.GetRange(RoomEntryAddress.MainDeck, RoomEntrySize.MainDeck));
-        
-        var entry = MemoryUtils.FromMemoryArray<RoomEntry>(memoryRange);
-        Console.WriteLine($"entry : {entry.tileset}");
+
+        var map = new bool[30, 30];
+
+        for (var i = 0; i < MemoryRoomEntry.AmountMainDeck; i++)
+        {
+            var memoryRange = data.GetRange(
+                MemoryRoomEntry.AddressMainDeck + MemoryRoomEntry.Size * i,
+                MemoryRoomEntry.Size);
+            var entry = MemoryUtils.BytesToStruct<RoomEntry>(memoryRange.ToArray(), MemoryUtils.Endianness.BigEndian);
+            // map[entry.mapXCoordinate, entry.mapYCoordinate] = true;
+            Console.WriteLine($"entry {i}: {entry}, bg0 pointer = 0x{entry.bg0Pointer:X}");
+
+        }
+
+        // StringBuilder sb = new StringBuilder((int)map.LongLength);
+        // for (int y = 0; y < map.GetLength(0); y++)
+        // {
+        //     for (int x = 0; x < map.GetLength(1); x++)
+        //     {
+        //         sb.Append(map[x, y] ? 'o' : ' ');
+        //     }
+        //
+        //     sb.Append("\n");
+        // }
+        //
+        // Console.WriteLine(sb);
     }
 }
