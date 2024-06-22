@@ -2,4 +2,4 @@
 
 using MetroidFusionExtractor.Model;
 
-var rom = new ROM(@"D:\Games\GBA\Metroid Fusion\Metroid Fusion (Europe) (En,Fr,De,Es,It)\Metroid Fusion (Europe) (En,Fr,De,Es,It).gba");
+var rom = new ROM("rom/Metroid Fusion (Europe) (En,Fr,De,Es,It).gba");

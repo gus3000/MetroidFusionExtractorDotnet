@@ -1,0 +1,3 @@
+Place your extracted ROM in this folder
+It should be named exactly :
+Metroid Fusion (Europe) (En,Fr,De,Es,It).gba
