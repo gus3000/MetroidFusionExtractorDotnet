@@ -31,10 +31,12 @@ public class RoomEntry
     public readonly byte effect;
     public readonly byte effectYPosition;
     public readonly ushort musicTrack;
-
+    
     public override string ToString()
     {
         return
-            $"RoomEntry (0x{tileset:X}, {bg0Properties:X}, {bg1Properties:X}, {bg2Properties:X}, {bg3Properties:X}, 0x{bg0Pointer:X} ... {mapXCoordinate},{mapYCoordinate})";
+            $"RoomEntry (0x{tileset:X}, {bg0Properties:X}, {bg1Properties:X}, {bg2Properties:X}, {bg3Properties:X}, 0x{bg0Pointer:X}, 0x{bg1Pointer:X}, 0x{bg2Pointer:X}, 0x{clipDataPointer:X}, 0x{bg3Pointer:X} ... {mapXCoordinate},{mapYCoordinate})";
+            // $"RoomEntry (clipdata pointer : 0x{clipDataPointer:X})";
     }
+    
 }

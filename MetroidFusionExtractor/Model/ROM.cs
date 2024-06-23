@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using System.Text.Json;
 using MetroidFusionExtractor.Model.Memory;
 
 namespace MetroidFusionExtractor.Model;
@@ -8,12 +9,15 @@ public class ROM
     private const int BUFFER_SIZE = 1024;
     private List<byte> data;
 
+    private List<RoomEntry> RoomEntries;
+
     public ROM(string filePath)
     {
-        InitData(filePath);
+        InitByteData(filePath);
+        InitRooms();
     }
 
-    private void InitData(string filePath)
+    private void InitByteData(string filePath)
     {
         var fileStream = File.OpenRead(filePath);
         Console.WriteLine($"file size : {fileStream.Length}");
@@ -30,13 +34,9 @@ public class ROM
         Console.WriteLine($"data size : {data.Count}");
     }
 
-    public void Debug()
+    private void InitRooms()
     {
-        // Console.WriteLine($"input data : {string.Join(",", memoryRange)}");
-        // var entry = new RoomEntry(data.GetRange(RoomEntryAddress.MainDeck, RoomEntrySize.MainDeck));
-
-        var map = new bool[30, 30];
-
+        RoomEntries = new List<RoomEntry>();
         for (var i = 0; i < MemoryRoomEntry.AmountMainDeck; i++)
         {
             var memoryRange = data.GetRange(
@@ -44,10 +44,22 @@ public class ROM
                 MemoryRoomEntry.Size);
             var entry = MemoryUtils.BytesToStruct<RoomEntry>(memoryRange.ToArray(), MemoryUtils.Endianness.BigEndian);
             // map[entry.mapXCoordinate, entry.mapYCoordinate] = true;
-            Console.WriteLine($"entry {i}: {entry}, bg0 pointer = 0x{entry.bg0Pointer:X}");
+            // Console.WriteLine($"entry {i}: {entry}");
+            RoomEntries.Add(entry);
+        }
+    }
 
+    public void Debug()
+    {
+        // Console.WriteLine($"input data : {string.Join(",", memoryRange)}");
+        // var entry = new RoomEntry(data.GetRange(RoomEntryAddress.MainDeck, RoomEntrySize.MainDeck));
+        
+        foreach (var (roomEntry,index) in RoomEntries.WithIndex())
+        {
+            Console.WriteLine($"entry {index}: {roomEntry}");
         }
 
+        // var map = new bool[30, 30];
         // StringBuilder sb = new StringBuilder((int)map.LongLength);
         // for (int y = 0; y < map.GetLength(0); y++)
         // {
