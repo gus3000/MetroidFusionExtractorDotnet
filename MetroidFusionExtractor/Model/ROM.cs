@@ -9,7 +9,7 @@ public class ROM
     private const int BUFFER_SIZE = 1024;
     private List<byte> data;
 
-    private List<RoomEntry> RoomEntries;
+    public List<RoomEntry> RoomEntries { get; private set; }
 
     public ROM(string filePath)
     {
