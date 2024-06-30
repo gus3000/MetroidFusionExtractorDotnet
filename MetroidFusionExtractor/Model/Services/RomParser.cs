@@ -29,6 +29,6 @@ public class RomParser
         var game = _gameFactory.Build(rom);
 
 
-        var mapViz = new MapViz(rom);
+        var mapViz = new MapViz(game);
     }
 }

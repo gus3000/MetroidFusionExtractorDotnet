@@ -1,6 +1,5 @@
 ﻿using MetroidFusionExtractor.Model.Game;
 using MetroidFusionExtractor.Model.Memory;
-using MetroidFusionExtractor.Model.Memory.RomStruct;
 
 namespace MetroidFusionExtractor.Model.Services.Memory.Factory;
 
@@ -30,7 +29,7 @@ public class RomFactory
             // Console.WriteLine($"entry {i}: {entry}");
             rom.AddRoom(Area.MainDeck, entry);
         }
-        
+
         return rom;
     }
 }

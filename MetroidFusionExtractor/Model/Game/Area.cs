@@ -8,5 +8,5 @@ public enum Area
     Sector3,
     Sector4,
     Sector5,
-    Sector6,
+    Sector6
 }

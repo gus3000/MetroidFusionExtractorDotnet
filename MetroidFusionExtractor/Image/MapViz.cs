@@ -1,6 +1,6 @@
-using MetroidFusionExtractor.Model;
+using MetroidFusionExtractor.Model.Game;
+using MetroidFusionExtractor.Model.Game.Level;
 using MetroidFusionExtractor.Model.Math;
-using MetroidFusionExtractor.Model.Memory.RomStruct;
 using SkiaSharp;
 
 namespace MetroidFusionExtractor.Image;
@@ -17,7 +17,7 @@ public class MapViz
 
     private readonly SKSurface _surface;
 
-    public MapViz(ROM rom)
+    public MapViz(GameInfo game)
     {
         _random = new Random();
         // var bitmap = new SKBitmap(500, 500);
@@ -30,6 +30,17 @@ public class MapViz
         canvas.Clear(SKColors.Black);
 
         var i = 0;
+        foreach (var area in Enum.GetValues(typeof(Area)).Cast<Area>())
+        {
+            var rooms = game.GetRooms(area);
+            foreach (var room in rooms)
+            {
+                DrawRoom(room, $"{i}");
+                i++;
+                // if (i >= 10)
+                // break;
+            }
+        }
         // foreach (var roomEntry in rom.RoomEntries)
         // {
         //     DrawRoom(roomEntry, $"{i}");
@@ -41,7 +52,7 @@ public class MapViz
         Save("map.png");
     }
 
-    private void DrawRoom(RomRoomEntry romRoom, string name)
+    private void DrawRoom(Room room, string name)
     {
         var typeface = SKTypeface.Default;
         var font = new SKFont(typeface);
@@ -51,11 +62,11 @@ public class MapViz
 
         var paint = new SKPaint();
         paint.Color = new SKColor((uint)_random.NextInt64());
-        var topLeft = MapCoordToImage(romRoom.mapXCoordinate, romRoom.mapYCoordinate);
-        var coords = new SKRect(topLeft.X, topLeft.Y, topLeft.X + UnitSize, topLeft.Y + UnitSize);
-        _surface.Canvas.DrawRect(coords, paint);
+        var topLeft = MapCoordToImage(room.MapX, room.MapY);
+        var paintedRect = new SKRect(topLeft.X, topLeft.Y, topLeft.X + UnitSize * room.Width, topLeft.Y + UnitSize * room.Height);
+        _surface.Canvas.DrawRect(paintedRect, paint);
         var textBlob = SKTextBlob.Create(name, font);
-        _surface.Canvas.DrawText(textBlob, coords.Left, coords.Bottom, whitePaint);
+        _surface.Canvas.DrawText(textBlob, paintedRect.Left, paintedRect.Bottom, whitePaint);
     }
 
     private void Save(string filename)

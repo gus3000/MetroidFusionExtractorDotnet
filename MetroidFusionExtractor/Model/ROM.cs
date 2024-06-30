@@ -12,10 +12,12 @@ public class ROM
     {
         _roomEntries = new Dictionary<Area, List<RomRoomEntry>>();
 
-        foreach (var area in Enum.GetValues(typeof(Area)).Cast<Area>())
-        {
-            _roomEntries[area] = new List<RomRoomEntry>();
-        }
+        foreach (var area in Enum.GetValues(typeof(Area)).Cast<Area>()) _roomEntries[area] = new List<RomRoomEntry>();
+    }
+
+    public List<RomRoomEntry> GetRooms(Area area)
+    {
+        return _roomEntries[area];
     }
 
     public void AddRoom(Area area, RomRoomEntry entry)
