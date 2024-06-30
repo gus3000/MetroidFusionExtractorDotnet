@@ -1,4 +1,3 @@
-using System.Buffers.Binary;
 using System.Runtime.InteropServices;
 
 namespace MetroidFusionExtractor.Model.Memory;
@@ -17,11 +16,11 @@ public class MemoryUtils
 
         MaybeAdjustEndianness(typeof(T), rawData, endianness);
 
-        GCHandle handle = GCHandle.Alloc(rawData, GCHandleType.Pinned);
+        var handle = GCHandle.Alloc(rawData, GCHandleType.Pinned);
 
         try
         {
-            IntPtr rawDataPtr = handle.AddrOfPinnedObject();
+            var rawDataPtr = handle.AddrOfPinnedObject();
             result = (T)Marshal.PtrToStructure(rawDataPtr, typeof(T));
         }
         finally
@@ -34,11 +33,9 @@ public class MemoryUtils
 
     private static void MaybeAdjustEndianness(Type type, byte[] data, Endianness endianness, int startOffset = 0)
     {
-        if ((BitConverter.IsLittleEndian) == (endianness == Endianness.LittleEndian))
-        {
+        if (BitConverter.IsLittleEndian == (endianness == Endianness.LittleEndian))
             // nothing to change => return
             return;
-        }
 
         foreach (var field in type.GetFields())
         {
@@ -49,6 +46,10 @@ public class MemoryUtils
 
             if (fieldType == typeof(string))
                 // don't swap bytes for strings
+                continue;
+
+            var isRomPointer = field.CustomAttributes.Any(attributeData => attributeData.AttributeType == typeof(RomPointerAttribute));
+            if (isRomPointer)
                 continue;
 
             var offset = Marshal.OffsetOf(type, field.Name).ToInt32();
@@ -63,14 +64,10 @@ public class MemoryUtils
             var effectiveOffset = startOffset + offset;
 
             if (subFields.Length == 0)
-            {
                 Array.Reverse(data, effectiveOffset, Marshal.SizeOf(fieldType));
-            }
             else
-            {
                 // recurse
                 MaybeAdjustEndianness(fieldType, data, endianness, effectiveOffset);
-            }
         }
     }
 }

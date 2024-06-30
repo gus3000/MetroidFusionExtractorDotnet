@@ -1,3 +1,3 @@
 Place your extracted ROM in this folder
-It should be named exactly :
+It should be extracted from the Europe version of the game, and named exactly :
 Metroid Fusion (Europe) (En,Fr,De,Es,It).gba
