@@ -1,6 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
 using MetroidFusionExtractor.Model.Services;
+using MetroidFusionExtractor.Model.Services.Game;
 using MetroidFusionExtractor.Model.Services.Memory.Factory;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -8,10 +9,18 @@ const string romPath = "rom/Metroid Fusion (Europe) (En,Fr,De,Es,It).gba";
 
 void ConfigureServices(IServiceCollection services)
 {
-    services.AddScoped<RomParser>();
+    //Misc
+    services.AddSingleton<RomParser>();
 
-    services.AddScoped<RomFactory>();
-    services.AddScoped<RoomFactory>();
+    //Misc Factories
+    services.AddSingleton<FileDataFactory>();
+    //Game Factories
+    services.AddSingleton<GameFactory>();
+    services.AddSingleton<RoomFactory>();
+
+    //Rom Factories
+    services.AddSingleton<RomFactory>();
+    services.AddSingleton<RomRoomFactory>();
 }
 
 ServiceCollection services = new();

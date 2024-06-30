@@ -1,37 +1,36 @@
-﻿using MetroidFusionExtractor.Model.Memory;
+﻿using MetroidFusionExtractor.Model.Game;
+using MetroidFusionExtractor.Model.Memory;
 using MetroidFusionExtractor.Model.Memory.RomStruct;
 
 namespace MetroidFusionExtractor.Model.Services.Memory.Factory;
 
 public class RomFactory
 {
-    public RoomFactory RoomFactory { get; }
-
     public RomFactory(
-        RoomFactory roomFactory
+        RomRoomFactory romRoomFactory
     )
     {
-        RoomFactory = roomFactory;
+        RomRoomFactory = romRoomFactory;
     }
+
+    public RomRoomFactory RomRoomFactory { get; }
 
     public ROM Build(List<byte> data)
     {
-        var rom = new ROM(data);
-        var roomEntries = new List<RomRoomEntry>();
+        var rom = new ROM();
 
         for (var i = 0; i < MemoryRoomEntry.AmountMainDeck; i++)
         {
             var memoryRange = data.GetRange(
                 MemoryRoomEntry.AddressMainDeck + MemoryRoomEntry.Size * i,
-                MemoryRoomEntry.Size);
-            var entry = RoomFactory.Build(memoryRange);
+                MemoryRoomEntry.Size
+            );
+            var entry = RomRoomFactory.Build(memoryRange);
             // map[entry.mapXCoordinate, entry.mapYCoordinate] = true;
             // Console.WriteLine($"entry {i}: {entry}");
-            roomEntries.Add(entry);
+            rom.AddRoom(Area.MainDeck, entry);
         }
         
-        foreach (var (roomEntry, index) in roomEntries.WithIndex()) Console.WriteLine($"entry {index}: {roomEntry}");
-
         return rom;
     }
 }
