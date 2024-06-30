@@ -27,11 +27,11 @@ public class MapViz
 
         var canvas = _surface.Canvas;
 
-        canvas.Clear(SKColors.Black);
 
         var i = 0;
         foreach (var area in Enum.GetValues(typeof(Area)).Cast<Area>())
         {
+            canvas.Clear(SKColors.Black);
             var rooms = game.GetRooms(area);
             foreach (var room in rooms)
             {
@@ -40,6 +40,8 @@ public class MapViz
                 // if (i >= 10)
                 // break;
             }
+
+            Save($"map-{area}.png");
         }
         // foreach (var roomEntry in rom.RoomEntries)
         // {
@@ -48,8 +50,6 @@ public class MapViz
         //     if (i >= 10)
         //         break;
         // }
-
-        Save("map.png");
     }
 
     private void DrawRoom(Room room, string name)

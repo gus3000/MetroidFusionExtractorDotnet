@@ -1,3 +1,5 @@
+using MetroidFusionExtractor.Model.Game;
+
 namespace MetroidFusionExtractor.Model.Memory;
 
 public class MemoryRoomEntry
@@ -19,4 +21,37 @@ public class MemoryRoomEntry
     public const int AddressSector4 = 0x3C7754;
     public const int AddressSector5 = 0x3C6B24;
     public const int AddressSector6 = 0x3C8294;
+
+
+    public static int GetAmount(Area area)
+    {
+        switch (area)
+        {
+            case Area.MainDeck: return AmountMainDeck;
+            case Area.Sector1: return AmountSector1;
+            case Area.Sector2: return AmountSector2;
+            case Area.Sector3: return AmountSector3;
+            case Area.Sector4: return AmountSector4;
+            case Area.Sector5: return AmountSector5;
+            case Area.Sector6: return AmountSector6;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(area), area, null);
+        }
+    }
+
+    public static int GetAddress(Area area)
+    {
+        switch (area)
+        {
+            case Area.MainDeck: return AddressMainDeck;
+            case Area.Sector1: return AddressSector1;
+            case Area.Sector2: return AddressSector2;
+            case Area.Sector3: return AddressSector3;
+            case Area.Sector4: return AddressSector4;
+            case Area.Sector5: return AddressSector5;
+            case Area.Sector6: return AddressSector6;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(area), area, null);
+        }
+    }
 }

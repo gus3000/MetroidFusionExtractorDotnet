@@ -18,16 +18,19 @@ public class RomFactory
     {
         var rom = new ROM();
 
-        for (var i = 0; i < MemoryRoomEntry.AmountMainDeck; i++)
+        foreach (Area area in Enum.GetValues(typeof(Area)))
         {
-            var memoryRange = data.GetRange(
-                MemoryRoomEntry.AddressMainDeck + MemoryRoomEntry.Size * i,
-                MemoryRoomEntry.Size
-            );
-            var entry = RomRoomFactory.Build(memoryRange);
-            // map[entry.mapXCoordinate, entry.mapYCoordinate] = true;
-            // Console.WriteLine($"entry {i}: {entry}");
-            rom.AddRoom(Area.MainDeck, entry);
+            var address = MemoryRoomEntry.GetAddress(area);
+            var amount = MemoryRoomEntry.GetAmount(area);
+            for (var i = 0; i < amount; i++)
+            {
+                var memoryRange = data.GetRange(
+                    address + MemoryRoomEntry.Size * i,
+                    MemoryRoomEntry.Size
+                );
+                var entry = RomRoomFactory.Build(memoryRange);
+                rom.AddRoom(area, entry);
+            }
         }
 
         return rom;
