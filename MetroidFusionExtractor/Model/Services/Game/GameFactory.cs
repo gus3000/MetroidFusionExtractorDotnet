@@ -22,14 +22,12 @@ public class GameFactory
         var gameInfo = new GameInfo();
 
         foreach (Area area in Enum.GetValues(typeof(Area)))
+        foreach (var romRoomEntry in _romService.Rom.GetRooms(area))
         {
-            foreach (var romRoomEntry in _romService.Rom.GetRooms(area))
-            {
-                var room = _roomFactory.Build(romRoomEntry);
-                gameInfo.AddRoom(area, room);
-            }    
+            var room = _roomFactory.Build(romRoomEntry);
+            gameInfo.AddRoom(area, room);
         }
-        
+
 
         return gameInfo;
     }

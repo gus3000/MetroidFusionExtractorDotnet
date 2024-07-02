@@ -48,7 +48,8 @@ public class MemoryUtils
                 // don't swap bytes for strings
                 continue;
 
-            var isRomPointer = field.CustomAttributes.Any(attributeData => attributeData.AttributeType == typeof(RomPointerAttribute));
+            var isRomPointer = field.CustomAttributes.Any(attributeData =>
+                attributeData.AttributeType == typeof(RomPointerAttribute));
             if (isRomPointer)
                 continue;
 

@@ -7,7 +7,7 @@ public class ROM
 {
     public const string RomPath = "rom/Metroid Fusion (Europe) (En,Fr,De,Es,It).gba";
 
-    
+
     private readonly Dictionary<Area, List<RomRoomEntry>> _roomEntries;
     // public List<RomRoomEntry> RoomEntries { get; } = new();
 

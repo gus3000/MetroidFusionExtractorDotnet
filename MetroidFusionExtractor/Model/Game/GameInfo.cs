@@ -22,4 +22,9 @@ public class GameInfo
     {
         return _roomEntries[area];
     }
+
+    public Room GetRoom(Area area, int index)
+    {
+        return _roomEntries[area][index];
+    }
 }

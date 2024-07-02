@@ -1,6 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
-using MetroidFusionExtractor.Model.Services;
+using MetroidFusionExtractor.Image;
+using MetroidFusionExtractor.Model.Game;
 using MetroidFusionExtractor.Model.Services.Draw;
 using MetroidFusionExtractor.Model.Services.Game;
 using MetroidFusionExtractor.Model.Services.Memory;
@@ -13,11 +14,12 @@ void ConfigureServices(IServiceCollection services)
     services.AddSingleton<RomService>();
 
     //Draw
-    services.AddSingleton<MapDrawer>();
-    
+    services.AddSingleton<FullDrawer>();
+    services.AddSingleton<RoomDrawer>();
+
     //Misc Factories
     services.AddSingleton<FileDataFactory>();
-    
+
     //Game Factories
     services.AddSingleton<GameFactory>();
     services.AddSingleton<RoomFactory>();
@@ -30,6 +32,14 @@ void ConfigureServices(IServiceCollection services)
 ServiceCollection services = new();
 ConfigureServices(services);
 using var provider = services.BuildServiceProvider();
-var drawer = provider.GetRequiredService<MapDrawer>();
+// var drawer = provider.GetRequiredService<FullDrawer>();
 
-drawer.DrawMap();
+// drawer.DrawMap();
+
+var drawer = provider.GetRequiredService<RoomDrawer>();
+var gameFactory = provider.GetRequiredService<GameFactory>();
+
+var game = gameFactory.Build();
+var room = game.GetRoom(Area.MainDeck, 0);
+
+drawer.Draw(room, "MainDeck-0");
