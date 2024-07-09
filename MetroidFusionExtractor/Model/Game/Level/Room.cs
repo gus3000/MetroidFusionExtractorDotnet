@@ -15,5 +15,6 @@ public class Room
     public int MapX { get; init; }
     public int MapY { get; init; }
 
+    // public List<ClipDataEntry> ClipDataEntries { get; init; }
     public Block[,] Blocks { get; init; }
 }

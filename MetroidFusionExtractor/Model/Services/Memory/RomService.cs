@@ -1,4 +1,5 @@
-﻿using MetroidFusionExtractor.Model.Services.Memory.Factory;
+﻿using System.Runtime.InteropServices;
+using MetroidFusionExtractor.Model.Services.Memory.Factory;
 
 namespace MetroidFusionExtractor.Model.Services.Memory;
 
@@ -22,7 +23,7 @@ public class RomService
 
     public ROM Rom { get; init; }
 
-    public byte Read(uint pointerValue)
+    private int pointerValueToAddress(uint pointerValue)
     {
         const int ROM_PREFIX = 0x8000000;
         if (pointerValue < ROM_PREFIX)
@@ -33,6 +34,25 @@ public class RomService
         if (address > _data.Count)
             throw new Exception($"Unable to access memory address 0x{address:X}, rom is only 0x{_data.Count} bytes !");
 
-        return _data[address];
+        return address;
+    }
+
+    public byte Read(uint pointerValue)
+    {
+        return _data[pointerValueToAddress(pointerValue)];
+    }
+
+    public ushort ReadU16(uint pointerValue)
+    {
+        var address = pointerValueToAddress(pointerValue);
+        return (ushort)((_data[address] << 8) + _data[address+1]);
+        // return (ushort)(_data[address] << 8 + _data[address + 1]);
+    }
+
+    public List<byte> ReadArray(uint pointerValue, int count)
+    {
+        var arrayAddress = pointerValueToAddress(pointerValue);
+
+        return _data.GetRange(arrayAddress, count);
     }
 }

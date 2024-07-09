@@ -6,8 +6,8 @@ namespace MetroidFusionExtractor.Image;
 
 public class RoomDrawer : AbstractDrawer
 {
-    public const int BlockPixelWidth = 16;
-    public const int BlockPixelHeight = 16;
+    public const int BlockPixelWidth = 32;
+    public const int BlockPixelHeight = 32;
 
     public RoomDrawer()
     {
@@ -20,14 +20,21 @@ public class RoomDrawer : AbstractDrawer
         {
             for (int x = 0; x < room.BlockWidth; x++)
             {
-                var hue = room.Blocks[x, y].ClipData;
-                SKColor color = SKColor.FromHsl(hue, 100, 50);
-                Console.WriteLine($"color : {color}");
-                DrawRect(x, y, color);
+                DrawBlock(x, y, room.Blocks[x, y]);
             }
         }
 
         Save($"{name}.png", "rooms");
+    }
+
+    private void DrawBlock(int x, int y, Block block)
+    {
+        var hue = block.ClipData;
+        SKColor color = SKColor.FromHsl((hue*17) % 100, 100, 50);
+        // Console.WriteLine($"color : {color}");
+        DrawRect(x, y, color);
+        
+        DrawText(x, y, $"{block.ClipData:X}");
     }
 
     private void DrawRect(int x, int y, SKColor color)
@@ -36,6 +43,15 @@ public class RoomDrawer : AbstractDrawer
         paint.Color = color;
         var paintedRect = GetPaintedRect(x, y);
         Surface.Canvas.DrawRect(paintedRect, paint);
+    }
+
+    private void DrawText(int x, int y, string text)
+    {
+        var paint = new SKPaint();
+        paint.Color = SKColors.Black;
+        var paintedRect = GetPaintedRect(x, y);
+        var textStart = new SKPoint(paintedRect.Left, paintedRect.Bottom);
+        Surface.Canvas.DrawText(text, textStart, paint);
     }
 
     private SKRect GetPaintedRect(int x, int y)

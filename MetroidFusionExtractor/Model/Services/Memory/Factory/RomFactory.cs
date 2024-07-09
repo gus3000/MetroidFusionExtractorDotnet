@@ -30,6 +30,7 @@ public class RomFactory
                 );
                 var entry = RomRoomFactory.Build(memoryRange);
                 rom.AddRoom(area, entry);
+                // return rom; //FIXME remove
             }
         }
 

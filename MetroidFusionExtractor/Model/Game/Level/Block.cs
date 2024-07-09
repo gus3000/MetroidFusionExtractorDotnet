@@ -2,5 +2,6 @@ namespace MetroidFusionExtractor.Model.Game.Level;
 
 public class Block
 {
-    public int ClipData { get; init; }
+    // public ClipDataEntry ClipDataEntry { get; init; }
+    public ushort ClipData { get; init; }
 }
