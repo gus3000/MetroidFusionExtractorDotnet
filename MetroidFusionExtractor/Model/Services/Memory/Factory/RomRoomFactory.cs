@@ -1,12 +1,23 @@
-﻿using MetroidFusionExtractor.Model.Memory;
-using MetroidFusionExtractor.Model.Memory.RomStruct;
+﻿using MetroidFusionExtractor.Model.Memory.RomStruct;
 
 namespace MetroidFusionExtractor.Model.Services.Memory.Factory;
 
 public class RomRoomFactory
 {
-    public RomRoomEntry Build(List<byte> memoryRange)
+    private readonly RomService _romService;
+
+    public RomRoomFactory(
+        RomService romService
+    )
     {
-        return MemoryUtils.BytesToStruct<RomRoomEntry>(memoryRange.ToArray(), MemoryUtils.Endianness.BigEndian);
+        _romService = romService;
+    }
+
+    public RomRoomEntry Build(uint roomPointer)
+    {
+        return _romService.ReadObject<RomRoomEntry>(roomPointer);
+
+        // return RomService.BytesToStruct<RomRoomEntry>(memoryRange.ToArray(), RomService.Endianness.BigEndian);
+        // return _memoryService.BytesToStruct<RomRoomEntry>(memoryRange.ToArray(), MemoryService.Endianness.BigEndian);
     }
 }

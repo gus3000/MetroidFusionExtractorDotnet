@@ -1,42 +1,50 @@
-using MetroidFusionExtractor.Model.Game.Level;
+using MetroidFusionExtractor.Model.Services.Compress;
 using MetroidFusionExtractor.Model.Services.Memory;
 
 namespace MetroidFusionExtractor.Model.Services.Game;
 
 public class ClipDataFactory
 {
+    private const int ClipDataTypeOffsetPointer = 0x8000000 + 0x647DC;
+    private readonly int _clipDataTypeOffset;
+    private readonly RleService _rleService;
     private readonly RomService _romService;
 
     public ClipDataFactory(
-        RomService romService
+        RomService romService,
+        RleService rleService
     )
     {
         _romService = romService;
+        _rleService = rleService;
+        _clipDataTypeOffset = _romService.Read(ClipDataTypeOffsetPointer);
+        Console.WriteLine(
+            $"Clip data type offset : {_clipDataTypeOffset}, read from pointer 0x{ClipDataTypeOffsetPointer:X}");
     }
 
-    public List<ClipDataEntry> Build(uint clipDataPointer)
+    //TODO use model type ClipDataType (enum ?)
+    public ushort[,] Build(uint clipDataPointer)
     {
         // Note : clipdata is compressed with RLE !
-        var clipDataEntries = new List<ClipDataEntry>();
 
+        var blockWidth = _romService.Read(clipDataPointer);
+        var blockHeight = _romService.Read(clipDataPointer + 1);
 
-        var clipDataEntry = BuildOne(clipDataPointer + 2);
-        Console.WriteLine($"clipdata X = {clipDataEntry.X} -> {clipDataEntry.XMax}");
-        Console.WriteLine($"clipdata Y = {clipDataEntry.Y} -> {clipDataEntry.YMax}");
-        clipDataEntries.Add(clipDataEntry);
+        var clipDataGrid = new ushort[blockWidth, blockHeight];
 
-        return clipDataEntries;
-    }
-
-    private ClipDataEntry BuildOne(uint pointer)
-    {
-        return new ClipDataEntry
+        var blockRomClipData = _rleService.ReadCompressedData(clipDataPointer + 2, blockWidth * blockHeight);
+        // Console.WriteLine(
+        // $"blockRomData size = {blockWidth} x {blockHeight} = {blockRomClipData.Count} (0x{blockRomClipData.Count:X})"
+        // );
+        for (var y = 0; y < blockHeight; y++)
+        for (var x = 0; x < blockWidth; x++)
         {
-            X = _romService.Read(pointer),
-            XMax = _romService.Read(pointer + 1),
-            Y = _romService.Read(pointer + 2),
-            YMax = _romService.Read(pointer+3),
-            ClipDataBlockBehavior = ClipDataBlockBehavior.AirOrSolid,
-        };
+            var clipIndex = (y * blockWidth + x) * 2;
+            var clipDataType = (ushort)((blockRomClipData[clipIndex] + blockRomClipData[clipIndex + 1]) << 8);
+            clipDataGrid[x, y] = _romService.Read((uint)(_clipDataTypeOffset + clipDataType));
+        }
+
+
+        return clipDataGrid;
     }
 }

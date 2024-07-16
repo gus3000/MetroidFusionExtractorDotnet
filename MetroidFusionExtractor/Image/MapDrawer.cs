@@ -22,7 +22,6 @@ public class MapDrawer : AbstractDrawer
         _game = game;
         _random = new Random();
         // var bitmap = new SKBitmap(500, 500);
-        
     }
 
     public void Draw()

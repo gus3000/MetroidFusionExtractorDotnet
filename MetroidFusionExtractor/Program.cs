@@ -13,10 +13,11 @@ void ConfigureServices(IServiceCollection services)
 {
     //Misc
     services.AddSingleton<RomService>();
+    services.AddSingleton<MemoryService>();
 
     //Compression
     services.AddSingleton<RleService>();
-    
+
     //Draw
     services.AddSingleton<FullDrawer>();
     services.AddSingleton<RoomDrawer>();
@@ -28,6 +29,8 @@ void ConfigureServices(IServiceCollection services)
     services.AddSingleton<ClipDataFactory>();
     services.AddSingleton<GameFactory>();
     services.AddSingleton<RoomFactory>();
+    services.AddSingleton<TilesetFactory>();
+    services.AddSingleton<BackgroundPaletteFactory>();
 
     //Rom Factories
     services.AddSingleton<RomFactory>();
@@ -47,10 +50,6 @@ var gameFactory = provider.GetRequiredService<GameFactory>();
 var game = gameFactory.Build();
 // for (int roomId = 0; roomId < 10; roomId++)
 var i = 0;
-foreach(var room in game.GetRooms(Area.MainDeck))
-{
+foreach (var room in game.GetRooms(Area.MainDeck))
     // var room = game.GetRoom(Area.MainDeck, roomId);
-
     drawer.Draw(room, $"MainDeck-{i++}");
-    
-}

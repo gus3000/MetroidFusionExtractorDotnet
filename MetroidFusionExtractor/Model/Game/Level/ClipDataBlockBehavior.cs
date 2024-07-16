@@ -84,5 +84,5 @@ public enum ClipDataBlockBehavior
     RedDoorSlot3 = 0x9A,
     RedDoorSlot4 = 0x9B,
     RedDoorSlot5 = 0x9C,
-    RedDoorSlot6 = 0x9D,
+    RedDoorSlot6 = 0x9D
 }

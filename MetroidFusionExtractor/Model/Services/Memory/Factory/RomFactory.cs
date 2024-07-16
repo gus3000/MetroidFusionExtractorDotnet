@@ -14,7 +14,7 @@ public class RomFactory
 
     public RomRoomFactory RomRoomFactory { get; }
 
-    public ROM Build(List<byte> data)
+    public ROM Build()
     {
         var rom = new ROM();
 
@@ -24,11 +24,11 @@ public class RomFactory
             var amount = MemoryRoomEntry.GetAmount(area);
             for (var i = 0; i < amount; i++)
             {
-                var memoryRange = data.GetRange(
-                    address + MemoryRoomEntry.Size * i,
-                    MemoryRoomEntry.Size
-                );
-                var entry = RomRoomFactory.Build(memoryRange);
+                // var memoryRange = data.GetRange(
+                //     address + MemoryRoomEntry.Size * i,
+                //     MemoryRoomEntry.Size
+                // );
+                var entry = RomRoomFactory.Build((uint)(address + MemoryRoomEntry.Size * i));
                 rom.AddRoom(area, entry);
                 // return rom; //FIXME remove
             }

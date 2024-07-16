@@ -9,7 +9,10 @@ public abstract class AbstractDrawer
 
     // public abstract void Draw();
 
-    protected void InitSurface(Vector2I vi) => InitSurface(vi.X, vi.Y);
+    protected void InitSurface(Vector2I vi)
+    {
+        InitSurface(vi.X, vi.Y);
+    }
 
     protected void InitSurface(int width, int height)
     {

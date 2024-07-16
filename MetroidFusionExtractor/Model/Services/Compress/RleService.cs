@@ -13,19 +13,24 @@ public class RleService : ICompressionService
         _romService = romService;
     }
 
+    public List<byte> ReadCompressedData(uint start, int length)
+    {
+        return DecompRLEMage(start, length);
+    }
+
     public List<byte> DecompRLEMage(uint start, int length)
     {
-        uint currentPointer = start;
+        var currentPointer = start;
         int currentOutputOffset;
-        List<byte> output = Enumerable.Repeat((byte)255, length*2).ToList();
-        int dest = 0;
+        var output = Enumerable.Repeat((byte)255, length * 2).ToList();
+        var dest = 0;
 
 
-        for (int p = 0; p < 2; p++)
+        for (var p = 0; p < 2; p++)
         {
             // for each pass
-            int destOffset = dest + p;
-            byte numBytes = _romService.Read(currentPointer++);
+            var destOffset = dest + p;
+            var numBytes = _romService.Read(currentPointer++);
             while (true)
             {
                 ushort amount;
@@ -43,15 +48,12 @@ public class RleService : ICompressionService
                     compare = 0x8000;
                 }
 
-                if (amount == 0)
-                {
-                    break;
-                }
+                if (amount == 0) break;
 
                 if ((amount & compare) != 0) // compressed
                 {
                     amount %= compare;
-                    byte val = _romService.Read(currentPointer++);
+                    var val = _romService.Read(currentPointer++);
                     // Console.WriteLine($"reading value {val}");
                     while (amount > 0)
                     {
@@ -79,51 +81,6 @@ public class RleService : ICompressionService
         return output;
     }
 
-    public List<byte> ReadCompressedData(uint start, int length)
-    {
-        return DecompRLEMage(start, length);
-        Console.WriteLine($"Attempting to read RLE compressed data, of uncompressed size {length}");
-        var res = new List<byte>(length);
-        var currentPointer = start;
-
-        // for (int i = 0; i < length; i++)
-        // res.Add((byte) i);
-
-        byte amountSize = _romService.Read(currentPointer++);
-        Console.WriteLine($"amount size : {amountSize}");
-
-        ushort amount;
-        if (amountSize != 1)
-            throw new NotImplementedException($"RLE : amount size = {amountSize}, only 1 supported");
-        amount = _romService.Read(currentPointer++);
-        Console.WriteLine($"amount to read : {amount}");
-
-        // if (amount == 0)
-        // break;
-
-        ushort compressedFlag = 0x80;
-        bool isCompressed = (amount & compressedFlag) != 0;
-        Console.WriteLine($"is compressed ? {isCompressed}");
-        if (isCompressed)
-        {
-            amount -= compressedFlag;
-            Console.WriteLine($"actual amount : {amount}");
-            byte valueToCopy = _romService.Read(currentPointer);
-            Console.WriteLine($"Value : {valueToCopy}");
-            for (int i = 0; i < amount; i++)
-            {
-                res.Add(valueToCopy);
-                res.Add(0); //padding for now
-            }
-        }
-
-        // TODO remove end padding
-        for(int i=res.Count; i<length;i++)
-            res.Add(0);
-        
-        return res;
-    }
-
     public List<byte> ReadCompressedDataClassic(uint start, int length)
     {
         var res = new List<byte>();
@@ -139,10 +96,7 @@ public class RleService : ICompressionService
             Console.WriteLine(
                 $"reading address 0x{start + memoryRead:X}, read value {value} to be inserted {toRead} times");
             // for (int i = 0; i < blockRomClipData[read + 1]; i++)
-            for (int i = 0; i < toRead; i++)
-            {
-                res.Add(value);
-            }
+            for (var i = 0; i < toRead; i++) res.Add(value);
 
             read += toRead;
             read++;
