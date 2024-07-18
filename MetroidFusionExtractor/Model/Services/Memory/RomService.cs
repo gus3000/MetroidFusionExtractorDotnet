@@ -53,6 +53,29 @@ public class RomService
         // return (ushort)(_data[address] << 8 + _data[address + 1]);
     }
 
+    public uint ReadU32(uint pointerValue)
+    {
+        var address = pointerValueToAddress(pointerValue);
+        return (ushort)(
+            (_data[address] << 24)
+            + (_data[address + 1] << 16)
+            + (_data[address + 2] << 8)
+            + _data[address + 3]
+        );
+    }
+
+    public uint ReadPointer(uint pointerValue)
+    {
+        var address = pointerValueToAddress(pointerValue);
+        return
+            (uint)(
+                _data[address]
+                + (_data[address + 1] << 8)
+                + (_data[address + 2] << 16)
+                + (_data[address + 3] << 24)
+            );
+    }
+
     public List<byte> ReadArray(uint pointerValue, int count)
     {
         var arrayAddress = pointerValueToAddress(pointerValue);

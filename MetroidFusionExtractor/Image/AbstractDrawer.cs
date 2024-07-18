@@ -23,13 +23,14 @@ public abstract class AbstractDrawer
     }
 
 
-    protected void Save(string filename, string folderPath = ".")
+    protected void Save(string filename)
     {
+        var folderPath = Path.GetDirectoryName(filename);
         var image = Surface.Snapshot();
         var imageData = image.Encode();
 
         Directory.CreateDirectory(folderPath);
-        using (var stream = File.OpenWrite(Path.Combine(folderPath, filename)))
+        using (var stream = File.OpenWrite(filename))
         {
             imageData.SaveTo(stream);
         }

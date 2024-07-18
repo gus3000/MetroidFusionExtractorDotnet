@@ -20,9 +20,9 @@ public class BackgroundPaletteFactory
 
         var dunnow = _romService.Read(backgroundPalettePointer);
         var rowsIThink = _romService.Read(backgroundPalettePointer + 1);
-        
-        Console.WriteLine($"\t\tReading palette : 0x{dunnow} 0x{rowsIThink}");
-        
+
+        // Console.WriteLine($"\t\tReading palette : 0x{dunnow} 0x{rowsIThink}");
+
         return palette;
     }
 }

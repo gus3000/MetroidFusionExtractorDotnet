@@ -26,17 +26,16 @@ public class TilesetFactory
         if (tileset >= KnownNumberOfTilesets)
             throw new Exception(
                 $"tileset is {tileset} (0x{tileset:X}) but there are only {KnownNumberOfTilesets} known tilesets");
-        Console.WriteLine($"\ttileset : 0x{tileset:X}");
-        
+        // Console.WriteLine($"\ttileset : 0x{tileset:X}");
+
         // Console.WriteLine($"\taddr = 0x{MemoryTilesetEntry.AddressTilesetEntries:X8} + 0x{tileset:X} * 0x{Marshal.SizeOf<RomTileset>():X}");
 
         var tileSetAddr = (uint)(MemoryTilesetEntry.AddressTilesetEntries + tileset * Marshal.SizeOf<RomTileset>());
-        
+
         var romTileset = _romService.ReadObject<RomTileset>(tileSetAddr);
         // Console.WriteLine($"\ttileset read at address : 0x{tileSetAddr:X}");
-        Console.WriteLine($"\ttileset background : [0x{romTileset.rleBackgroundTilemapPointer:X}]");
+        // Console.WriteLine($"\ttileset background : [0x{romTileset.rleBackgroundTilemapPointer:X}]");
 
-        
         var palette = _backgroundPaletteFactory.Build(romTileset.rleBackgroundTilemapPointer);
 
         return new Tileset();

@@ -26,6 +26,7 @@ void ConfigureServices(IServiceCollection services)
     services.AddSingleton<FileDataFactory>();
 
     //Game Factories
+    services.AddSingleton<BgFactory>();
     services.AddSingleton<ClipDataFactory>();
     services.AddSingleton<GameFactory>();
     services.AddSingleton<RoomFactory>();
@@ -48,8 +49,13 @@ var drawer = provider.GetRequiredService<RoomDrawer>();
 var gameFactory = provider.GetRequiredService<GameFactory>();
 
 var game = gameFactory.Build();
-// for (int roomId = 0; roomId < 10; roomId++)
-var i = 0;
-foreach (var room in game.GetRooms(Area.MainDeck))
-    // var room = game.GetRoom(Area.MainDeck, roomId);
-    drawer.Draw(room, $"MainDeck-{i++}");
+// var room = game.GetRoom(Area.MainDeck, roomId);
+
+foreach (Area area in Enum.GetValues(typeof(Area)))
+// foreach (var area in new Area[] {Area.MainDeck})
+{
+    Console.WriteLine($"Drawing area : {area}...");
+    var i = 0;
+    foreach (var room in game.GetRooms(area))
+        drawer.Draw(room, $"{area}/{i++}");
+}
