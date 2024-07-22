@@ -1,3 +1,4 @@
+using MetroidFusionExtractor.Model.Game.Level;
 using MetroidFusionExtractor.Model.Services.Compress;
 using MetroidFusionExtractor.Model.Services.Memory;
 
@@ -18,14 +19,14 @@ public class ClipDataFactory
     }
 
     //TODO use model type ClipDataType (enum ?)
-    public byte[,] Build(uint clipDataPointer)
+    public ClipData.Values[,] Build(uint clipDataPointer)
     {
         // Note : clipdata is compressed with RLE !
 
         var blockWidth = _romService.Read(clipDataPointer);
         var blockHeight = _romService.Read(clipDataPointer + 1);
 
-        var clipDataGrid = new byte[blockWidth, blockHeight];
+        var clipDataGrid = new ClipData.Values[blockWidth, blockHeight];
 
         var blockRomClipData = _rleService.ReadCompressedData(clipDataPointer + 2, blockWidth * blockHeight);
 
@@ -34,7 +35,9 @@ public class ClipDataFactory
         {
             var clipIndex = (y * blockWidth + x) * 2;
 
-            clipDataGrid[x, y] = blockRomClipData[clipIndex];
+            var clipValue = blockRomClipData[clipIndex];
+            var clip = (ClipData.Values)clipValue;
+            clipDataGrid[x, y] = clip;
         }
 
 

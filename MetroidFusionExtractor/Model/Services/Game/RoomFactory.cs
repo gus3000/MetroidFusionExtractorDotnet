@@ -32,7 +32,7 @@ public class RoomFactory
 
         var tileset = _tilesetFactory.Build(romRoomEntry.tileset);
 
-        var bg0 = _bgFactory.Build(romRoomEntry.bg0Pointer, romRoomEntry.bg0Properties);
+        // var bg0 = _bgFactory.Build(romRoomEntry.bg0Pointer, romRoomEntry.bg0Properties, blockWidth, blockHeight);
         var clipData = _clipDataFactory.Build(romRoomEntry.clipDataPointer);
 
         var blocks = new Block[blockWidth, blockHeight];
@@ -40,7 +40,7 @@ public class RoomFactory
         for (var x = 0; x < blockWidth; x++)
             blocks[x, y] = new Block
             {
-                Bg0 = bg0[x, y],
+                // Bg0 = bg0[x, y],
                 ClipData = clipData[x, y]
             };
 

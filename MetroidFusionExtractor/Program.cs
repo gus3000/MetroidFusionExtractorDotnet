@@ -21,12 +21,14 @@ void ConfigureServices(IServiceCollection services)
     //Draw
     services.AddSingleton<FullDrawer>();
     services.AddSingleton<RoomDrawer>();
+    services.AddSingleton<TextureDrawer>();
 
     //Misc Factories
     services.AddSingleton<FileDataFactory>();
 
     //Game Factories
     services.AddSingleton<BgFactory>();
+    services.AddSingleton<BgPropertiesFactory>();
     services.AddSingleton<ClipDataFactory>();
     services.AddSingleton<GameFactory>();
     services.AddSingleton<RoomFactory>();
@@ -51,8 +53,8 @@ var gameFactory = provider.GetRequiredService<GameFactory>();
 var game = gameFactory.Build();
 // var room = game.GetRoom(Area.MainDeck, roomId);
 
-foreach (Area area in Enum.GetValues(typeof(Area)))
-// foreach (var area in new Area[] {Area.MainDeck})
+// foreach (Area area in Enum.GetValues(typeof(Area)))
+foreach (var area in new[] { Area.MainDeck })
 {
     Console.WriteLine($"Drawing area : {area}...");
     var i = 0;
