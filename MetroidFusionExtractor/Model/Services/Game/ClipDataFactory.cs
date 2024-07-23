@@ -18,15 +18,14 @@ public class ClipDataFactory
         _rleService = rleService;
     }
 
-    //TODO use model type ClipDataType (enum ?)
-    public ClipData.Values[,] Build(uint clipDataPointer)
+    public ClipDataValue[,] Build(uint clipDataPointer)
     {
         // Note : clipdata is compressed with RLE !
 
         var blockWidth = _romService.Read(clipDataPointer);
         var blockHeight = _romService.Read(clipDataPointer + 1);
 
-        var clipDataGrid = new ClipData.Values[blockWidth, blockHeight];
+        var clipDataGrid = new ClipDataValue[blockWidth, blockHeight];
 
         var blockRomClipData = _rleService.ReadCompressedData(clipDataPointer + 2, blockWidth * blockHeight);
 
@@ -36,7 +35,7 @@ public class ClipDataFactory
             var clipIndex = (y * blockWidth + x) * 2;
 
             var clipValue = blockRomClipData[clipIndex];
-            var clip = (ClipData.Values)clipValue;
+            var clip = (ClipDataValue)clipValue;
             clipDataGrid[x, y] = clip;
         }
 

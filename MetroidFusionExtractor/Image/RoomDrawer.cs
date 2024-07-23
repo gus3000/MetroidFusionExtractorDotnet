@@ -54,7 +54,6 @@ public class RoomDrawer : AbstractDrawer
     private void DrawBlockClipdata(int x, int y, Block block)
     {
         DrawBitmap(x,y,_textureDrawer.From(block.ClipData));
-        DrawText(x, y, $"{(byte)block.ClipData:X}");
     }
 
     // private  ClipDataTexture

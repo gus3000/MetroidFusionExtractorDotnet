@@ -11,10 +11,12 @@
         <!--      <PackageReference Include="System.Drawing.Common" Version="8.0.6" />-->
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0"/>
         <PackageReference Include="SkiaSharp" Version="2.88.8"/>
+        <AssetsFiles Include="customAssets/**/*.*" />
     </ItemGroup>
 
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
         <!--        <Copy SourceFiles="$(OutputPath)$(MSBuildProjectName).dll" DestinationFolder="$(ProjectDir)BizHawk-2.9.1/ExternalTools" />-->
         <Copy SourceFiles="$(ProjectDir)/rom/Metroid Fusion (Europe) (En,Fr,De,Es,It).gba" DestinationFolder="$(OutputPath)/rom/"/>
+        <Copy SourceFiles="@(AssetsFiles)" DestinationFolder="$(OutputPath)/customAssets/" SkipUnchangedFiles="true"/>
     </Target>
 </Project>
